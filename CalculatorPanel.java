@@ -56,7 +56,7 @@ public class CalculatorPanel extends JFrame implements ActionListener {
         panelLabel = new JPanel();
         panelPanel = new JPanel();
         panelButtonsAndField = new JPanel();
-        label = new JLabel("Hello");
+        label = new JLabel();
         field = new JTextField(9);
         field.setFont(new Font("Cambria", Font.PLAIN, 70));
         field.setEditable(false);
@@ -180,6 +180,7 @@ public class CalculatorPanel extends JFrame implements ActionListener {
             operand1 = "";
             operand2 = "";
             operation = '0';
+            label.setText("");
         } else if (event.getSource() == clearEntryButton) {
             // clears only the field.
             field.setText("");
@@ -216,7 +217,13 @@ public class CalculatorPanel extends JFrame implements ActionListener {
                 field.setText(field.getText() + ".");
             } catch (Exception exception) {}
         } else if (event.getSource() == addButton) {
+            if (operation == '0') {
+                label.setText(label.getText() + field.getText());
+            } else if (field.getText().length() != 0) {
+                label.setText(label.getText() + operation + field.getText());
+            }
             calculate();
+            
             operation = '+';
         } else if (event.getSource() == subtractButton) {
             calculate();
@@ -231,15 +238,25 @@ public class CalculatorPanel extends JFrame implements ActionListener {
         if (justShowedAnswer) {
             // if you've just showed the answer, and you're going to start typing, then this clears the field.
             field.setText("");
+            label.setText("");
             justShowedAnswer = false;
         } 
         if (event.getSource() == equalsButton) {
             // I need this after the clear because otherwise the answer never shows.
             // calculates this: operand1 (operation) operand2 = ?
-            operand2 = field.getText();
-            if (operation != '0') {
-                field.setText((format.format(calculator.calculate(operand1, operand2, operation))));
+            if (operation == '0') {
+                label.setText(label.getText() + field.getText());
+            } else if (field.getText().length() != 0) {
+                label.setText(label.getText() + operation + field.getText());
             }
+            operand2 = field.getText();
+
+            if (operation != '0' && operand2.length() != 0) {
+                field.setText((format.format(calculator.calculate(operand1, operand2, operation))));
+            } else {
+                field.setText(format.format(Double.parseDouble(operand1)));
+            }
+
             justShowedAnswer = true;
             operation = '0';
         }
@@ -270,8 +287,9 @@ public class CalculatorPanel extends JFrame implements ActionListener {
     public void calculate() {
         // used to calculate within the four functions, since user might do two consecutive functions rather than simply hit equals.
         if (operation != '0' && field.getText().length() != 0) {
-            // runs if the previous operation wasn't an equals, and the field isn't empty.
+            // runs if the previous operation wasn't an equals and the field isn't empty.
             operand2 = field.getText();
+            // this next line BREAKS EVERYTHING if there is nothing in the field, therefore the restriction of the field's length is added to the condition above.
             operand1 = Double.toString(calculator.calculate(operand1, operand2, operation));
             field.setText("");
         } else if (field.getText().length() != 0) {
