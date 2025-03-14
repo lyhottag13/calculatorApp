@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.text.DecimalFormat;
 
 public class CalculatorPanel extends JFrame implements ActionListener {
@@ -64,7 +66,7 @@ public class CalculatorPanel extends JFrame implements ActionListener {
         Font buttonFont = new Font("Cambria", Font.PLAIN, 40);
         clearButton = new JButton("C");
         clearEntryButton = new JButton("CE");
-        deleteButton = new JButton("Delete");
+        deleteButton = new JButton("DEL");
         alternateSignButton = new JButton("+/-");
         addButton = new JButton("+");
         subtractButton = new JButton("-");
@@ -108,6 +110,7 @@ public class CalculatorPanel extends JFrame implements ActionListener {
         // BorderLayout used to position everything correctly; this was a little complicated.
         frame.add(panelPanel);
         panelPanel.setLayout(new BorderLayout());
+        panelPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         panelButtonsAndField.setLayout(new BorderLayout());
         panelPanel.add(panelLabel, BorderLayout.NORTH);
         panelPanel.add(panelButtonsAndField, BorderLayout.CENTER);
